@@ -4,7 +4,7 @@
 </h1>
 
 <p align="center">
-  easily extend hygen code generation with prisma schema
+  extend hygen code generation with prisma schema
 </p>
 
 <p align="center">
@@ -33,14 +33,13 @@ npm install --save hygen-prisma-helper
 You can extend Hygen via `.hygen.js`
 
 ```js
-const { createHelpers } = require("hygen-prisma-helper")
+const { createHelper } = require("hygen-prisma-helper")
 
-const { models, enums } = createHelpers('model User { }`)
+const prisma = createHelpers('model User { }`)
 
 module.exports = {
     helpers: {
-       models: models,
-       enums: enums,
+       prisma: prisma,
     },
   };
 ```

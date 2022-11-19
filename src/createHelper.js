@@ -83,15 +83,33 @@ const createModel = (model) => {
   return newModel
 }
 
-export const createHelpers = (source) => {
-  // https://github.com/MrLeebo/prisma-ast/blob/main/src/printSchema.ts
+export const createHelper = (source) => {
   const schema = getSchema(source)
-
   const enums = schema.list.filter((x) => x.type === 'enum').map(createEnum)
-
   const models = schema.list.filter((x) => x.type === 'model').map(createModel)
+  
+  const prisma = {
+    models: {
+      all: models,
+      byName: (name) => {
+        let model = prisma.models.all.find((x) => x.name === name)
+        if (!model) {
+          throw `Model ${name} not found`
+        }
+        return model
+      }
+    },
+    enums: {
+      all: enums,
+      byName: (name) => {
+        let enumModel = prisma.enums.all.find((x) => x.name === name)
+        if (!enumModel) {
+          throw `Enum ${name} not found`
+        }
+        return enumModel
+      }
+    }
+  }
 
-  const raw = schema.list
-
-  return { models, enums, raw }
+  return prisma
 }

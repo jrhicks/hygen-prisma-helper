@@ -1,4 +1,4 @@
-import { createHelpers } from '../src/createHelpers.js'
+import { createHelper } from '../src/createHelper.js'
 
 // posts         Post[]
 // profile       Profile?
@@ -13,8 +13,8 @@ describe('Models belongsTo', () => {
       managerId     Int
     }
   `
-  const { models, raw } = createHelpers(source)
-  const model = models[0]
+  const prisma = createHelper(source)
+  const model = prisma.models.all[0]
 
   test('Set belongsToRelationships', () => {
     let btFieldNames = model.belongsToRelationships.map((x) => x.name)
@@ -32,7 +32,7 @@ describe('Models belongsTo', () => {
   })
 
   test('Exclude foreignKeys from scalors', () => {
-    expect(models[0].scalars.map((s) => s.name)).not.toContain('managerId')
+    expect(model.scalars.map((s) => s.name)).not.toContain('managerId')
   })
 })
 
@@ -51,7 +51,9 @@ describe('Models collect scalor fields', () => {
       bytesField    Bytes
     }
   `
-  const { models } = createHelpers(source)
+
+  const prisma = createHelper(source)
+  const models = prisma.models.all
   const scalorFieldNames = models[0].scalars.map((f) => f.name)
 
   test('Include Boolean Fields in scalors', () => {
@@ -88,16 +90,15 @@ describe('Edge Cases', () => {
     const source = `
       model User {
       }`
-    const { models } = createHelpers(source)
-    console.log(models)
-    expect(models[0]).toBeDefined()
+    const prisma = createHelper(source)
+    expect(prisma.models.all[0]).toBeDefined()
   })
 
   test('Parse Empty Enum', () => {
     const source = `
     enum Role {
     }`
-    const { enums } = createHelpers(source)
-    expect(enums[0]).toBeDefined()
+    const prisma = createHelper(source)
+    expect(prisma.enums.all[0]).toBeDefined()
   })
 })
