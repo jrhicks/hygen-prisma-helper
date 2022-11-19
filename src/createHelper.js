@@ -87,7 +87,7 @@ export const createHelper = (source) => {
   const schema = getSchema(source)
   const enums = schema.list.filter((x) => x.type === 'enum').map(createEnum)
   const models = schema.list.filter((x) => x.type === 'model').map(createModel)
-  
+
   const prisma = {
     models: {
       all: models,
