@@ -56,6 +56,7 @@ const createEnum = (enumModel) => {
 
 const createModel = (model) => {
   let newModel = {
+    name: model.name,
     keys: [],
     scalars: [],
     hasManyRelationships: [],
@@ -92,7 +93,7 @@ export const createHelper = (source) => {
     models: {
       all: models,
       byName: (name) => {
-        let model = prisma.models.all.find((x) => x.name === name)
+        let model = models.filter((x) => x.name === name)[0]
         if (!model) {
           throw `Model ${name} not found`
         }
@@ -102,7 +103,7 @@ export const createHelper = (source) => {
     enums: {
       all: enums,
       byName: (name) => {
-        let enumModel = prisma.enums.all.find((x) => x.name === name)
+        let enumModel = enums.filter((x) => x.name === name)[0]
         if (!enumModel) {
           throw `Enum ${name} not found`
         }

@@ -5,6 +5,26 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+
+describe('Finders', () => {
+  test('find models by name', () => {
+    const source = `
+      model User {
+      }`
+    const prisma = createHelper(source)
+    expect(prisma.models.byName('User')).toBeDefined()
+  })
+
+  test('find enums by name', () => {
+    const source = `
+      enum Status {
+      }`
+    const prisma = createHelper(source)
+    expect(prisma.enums.byName('Status')).toBeDefined()
+  })
+
+})
+
 describe('Models belongsTo', () => {
   const source = `
     model User {
