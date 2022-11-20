@@ -5,7 +5,6 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
-
 describe('Model Inflection', () => {
   const source = `
     model CamelCase {
@@ -19,7 +18,7 @@ describe('Model Inflection', () => {
   const camelCase = prisma.models.byName('CamelCase')
   const camelCases = prisma.models.byName('CamelCases')
 
-  test('name', ()=>{
+  test('name', () => {
     expect(camelCase.name).toBe('CamelCase')
     expect(camelCases.name).toBe('CamelCases')
   })
@@ -59,8 +58,6 @@ describe('Model Inflection', () => {
     expect(camelCase.pluralTitle).toEqual('Camel Cases')
     expect(camelCases.pluralTitle).toEqual('Camel Cases')
   })
-
-
 })
 
 describe('Finders', () => {
@@ -79,7 +76,6 @@ describe('Finders', () => {
     const prisma = createHelper(source)
     expect(prisma.enums.byName('Status')).toBeDefined()
   })
-
 })
 
 describe('Models belongsTo', () => {

@@ -11,7 +11,6 @@ const pluralName = (name) => {
   return inflection.pluralize(name)
 }
 
-
 const singularVariable = (name) => {
   return inflection.camelize(inflection.singularize(name), true)
 }
@@ -36,7 +35,6 @@ const pluralLabel = (name) => {
   return inflection.transform(name, ['underscore', 'pluralize', 'humanize'])
 }
 
-
 const createField = (field) => {
   let newField = Object.assign(
     {
@@ -49,7 +47,8 @@ const createField = (field) => {
       isBelongsTo: false,
       foreignKey: undefined,
       references: undefined
-    }, field
+    },
+    field
   )
   if (field.attributes) {
     let attributes = [...field.attributes]
