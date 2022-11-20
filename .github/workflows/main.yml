@@ -45,6 +45,8 @@ jobs:
           node-version: '16'
       - name: install dependencies
         run: npm ci --ignore-engines --only=production
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3        
       - name: release
         run: npx semantic-release --dry-run
         env:
