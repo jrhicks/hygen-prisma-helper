@@ -32,6 +32,8 @@ jobs:
         run: npm ci --ignore-engines
       - name: run tests
         run: npm run test
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3           
 
   release:
     name: do semantic release
@@ -44,9 +46,7 @@ jobs:
         with:
           node-version: '16'
       - name: install dependencies
-        run: npm ci --ignore-engines --only=production
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3        
+        run: npm ci --ignore-engines --only=production    
       - name: release
         run: npx semantic-release --dry-run
         env:
