@@ -5,6 +5,64 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+describe('Field Inflection', () => {
+  const source = `
+    model User {
+      snake_case  String
+      snake_cases String
+    }
+    `
+
+  const prisma = createHelper(source)
+  const snake_case = prisma.models.find('User').scalars[0]
+  const snake_cases = prisma.models.find('User').scalars[1]
+
+  test('name', () => {
+    expect(snake_case.name).toBe('snake_case')
+    expect(snake_cases.name).toBe('snake_cases')
+  })
+
+  test('singularName', () => {
+    expect(snake_case.singularName).toBe('snake_case')
+    expect(snake_cases.singularName).toBe('snake_case')
+  })
+
+  test('pluralName', () => {
+    expect(snake_case.pluralName).toBe('snake_cases')
+    expect(snake_cases.pluralName).toBe('snake_cases')
+  })
+
+  test('singularVaraible', () => {
+    expect(snake_case.singularVariable).toEqual('snakeCase')
+    expect(snake_cases.singularVariable).toEqual('snakeCase')
+  })
+
+  test('pluralVariable', () => {
+    expect(snake_case.pluralVariable).toEqual('snakeCases')
+    expect(snake_cases.pluralVariable).toEqual('snakeCases')
+  })
+
+  test('singularLabel', () => {
+    expect(snake_case.singularLabel).toEqual('Snake case')
+    expect(snake_cases.singularLabel).toEqual('Snake case')
+  })
+
+  test('pluralLabel', () => {
+    expect(snake_case.pluralLabel).toEqual('Snake cases')
+    expect(snake_cases.pluralLabel).toEqual('Snake cases')
+  })
+
+  test('singularTitle', () => {
+    expect(snake_case.singularTitle).toEqual('Snake Case')
+    expect(snake_cases.singularTitle).toEqual('Snake Case')
+  })
+
+  test('pluralTitle', () => {
+    expect(snake_case.pluralTitle).toEqual('Snake Cases')
+    expect(snake_cases.pluralTitle).toEqual('Snake Cases')
+  })
+})
+
 describe('Model Inflection', () => {
   const source = `
     model CamelCase {

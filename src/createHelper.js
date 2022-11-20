@@ -1,5 +1,7 @@
 import { getSchema } from '@mrleebo/prisma-ast'
-import inflection from 'inflection'
+const inflection = require('inflection')
+
+console.log({inflection, getSchema})
 
 const SCALOR_TYPES = ['Float', 'String', 'Int', 'Boolean', 'DateTime', 'Bytes', 'Decimal']
 
@@ -39,6 +41,14 @@ const createField = (field) => {
   let newField = Object.assign(
     {
       name: field.name,
+      singularName: singularName(field.name),
+      pluralName: pluralName(field.name),
+      singularVariable: singularVariable(field.name),
+      pluralVariable: pluralVariable(field.name),
+      singularTitle: singularTitle(field.name),
+      pluralTitle: pluralTitle(field.name),
+      singularLabel: singularLabel(field.name),
+      pluralLabel: pluralLabel(field.name),
       autoincrement: false,
       default: undefined,
       isKey: false,
