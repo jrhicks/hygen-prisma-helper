@@ -5,8 +5,6 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
-
-
 describe('Enum Values', () => {
   const source = `
   enum Status {

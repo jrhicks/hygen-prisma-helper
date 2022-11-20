@@ -96,30 +96,29 @@ const createField = (field) => {
   return newField
 }
 
-
 const createEnumerator = (enumerator) => {
   const newEnumerator = {
-      name: enumerator.name,
-      title: inflection.titleize(enumerator.name.toLowerCase()),
-      label: inflection.humanize(enumerator.name.toLowerCase()),
-      comment: enumerator.comment    
-    }
+    name: enumerator.name,
+    title: inflection.titleize(enumerator.name.toLowerCase()),
+    label: inflection.humanize(enumerator.name.toLowerCase()),
+    comment: enumerator.comment
+  }
   return newEnumerator
 }
 
 const createEnum = (enumModel) => {
   return {
-      name: enumModel.name,
-      enumerators: (enumModel.enumerators || []).map(createEnumerator),
-      singularName: singularName(enumModel.name),
-      pluralName: pluralName(enumModel.name),
-      singularVariable: singularVariable(enumModel.name),
-      pluralVariable: pluralVariable(enumModel.name),
-      singularTitle: singularTitle(enumModel.name),
-      pluralTitle: pluralTitle(enumModel.name),
-      singularLabel: singularLabel(enumModel.name),
-      pluralLabel: pluralLabel(enumModel.name)
-    }
+    name: enumModel.name,
+    enumerators: (enumModel.enumerators || []).map(createEnumerator),
+    singularName: singularName(enumModel.name),
+    pluralName: pluralName(enumModel.name),
+    singularVariable: singularVariable(enumModel.name),
+    pluralVariable: pluralVariable(enumModel.name),
+    singularTitle: singularTitle(enumModel.name),
+    pluralTitle: pluralTitle(enumModel.name),
+    singularLabel: singularLabel(enumModel.name),
+    pluralLabel: pluralLabel(enumModel.name)
+  }
 }
 
 const createModel = (model) => {
