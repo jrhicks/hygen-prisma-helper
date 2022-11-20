@@ -5,16 +5,44 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+
+
+describe('Enum Values', () => {
+  const source = `
+  enum Status {
+    ACTIVE_STATE
+    INACTIVE_STATE
+  }
+  `
+  const prisma = createHelper(source)
+  const status = prisma.enums.find('Status')
+  const activeState = status.enumerators[0]
+
+  test('should have 2 enumerators', () => {
+    expect(status.enumerators.length).toBe(2)
+  })
+
+  test('name', () => {
+    expect(activeState.name).toBe('ACTIVE_STATE')
+  })
+
+  test('label', () => {
+    expect(activeState.label).toBe('Active state')
+  })
+
+  test('title', () => {
+    expect(activeState.title).toBe('Active State')
+  })
+})
+
 describe('Enum inflection', () => {
   const source = `
-  enum StatusFoo {
-    ACTIVE
-    INACTIVE
-  }
-  enum StatusFoos {
-    ACTIVE
-    INACTIVE
-  }
+    enum StatusFoo {
+      ACTIVE
+    }
+    enum StatusFoos {
+      ACTIVE
+    }
   `
 
   const prisma = createHelper(source)

@@ -96,10 +96,21 @@ const createField = (field) => {
   return newField
 }
 
+
+const createEnumerator = (enumerator) => {
+  const newEnumerator = {
+      name: enumerator.name,
+      title: inflection.titleize(enumerator.name.toLowerCase()),
+      label: inflection.humanize(enumerator.name.toLowerCase()),
+      comment: enumerator.comment    
+    }
+  return newEnumerator
+}
+
 const createEnum = (enumModel) => {
-  const newEnum = Object.assign(
-    {
+  return {
       name: enumModel.name,
+      enumerators: (enumModel.enumerators || []).map(createEnumerator),
       singularName: singularName(enumModel.name),
       pluralName: pluralName(enumModel.name),
       singularVariable: singularVariable(enumModel.name),
@@ -108,10 +119,7 @@ const createEnum = (enumModel) => {
       pluralTitle: pluralTitle(enumModel.name),
       singularLabel: singularLabel(enumModel.name),
       pluralLabel: pluralLabel(enumModel.name)
-    },
-    enumModel
-  )
-  return newEnum
+    }
 }
 
 const createModel = (model) => {
