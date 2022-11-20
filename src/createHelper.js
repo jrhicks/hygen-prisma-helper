@@ -66,7 +66,11 @@ const createField = (field) => {
           newField.unique = true
         }
         if (attribute.name === 'default') {
-          newField.default = attribute.args[0].value
+          const keyDefaults = ['autoincrement', 'cuid', 'uuid']
+          newField.default = attribute.args[0].value.name
+          if (keyDefaults.includes(newField.default)) {
+            newField.isKey = true
+          }
         }
         if (attribute.name === 'relation') {
           field.isRelation = true
@@ -89,6 +93,7 @@ const createField = (field) => {
       })
     }
   }
+  // console.log(JSON.stringify(field,null,2))
   return newField
 }
 
@@ -119,11 +124,15 @@ const createModel = (model) => {
       .filter((x) => x.type === 'field')
       .forEach((f) => {
         let newField = createField(f)
-        if (SCALOR_TYPES.includes(newField.fieldType)) {
+        if (SCALOR_TYPES.includes(newField.fieldType) && !newField.isKey) {
+          console.log({ name: newField.name, isKey: newField.isKey })
           newModel.scalars.push(newField)
         }
         if (newField.isBelongsTo) {
           newModel.belongsToRelationships.push(newField)
+        }
+        if (newField.isKey) {
+          newModel.keys.push(newField)
         }
         delete newField.attributes
       })

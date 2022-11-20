@@ -5,6 +5,38 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+describe('Model Keys', () => {
+  const source = `
+    model User {
+      a    Int     @default(autoincrement())
+      b    String  @default(uuid())
+      c    String  @default(cuid())
+    }
+    `
+  const prisma = createHelper(source)
+  const model = prisma.models.find('User')
+  const keyFieldNames = model.keys.map((x) => x.name)
+  const scalorFieldNames = model.scalars.map((x) => x.name)
+
+  test('scalars do NOT include key fields', () => {
+    expect(scalorFieldNames).not.toContain('a')
+    expect(scalorFieldNames).not.toContain('b')
+    expect(scalorFieldNames).not.toContain('c')
+  })
+
+  test('autoincrement fields are keys', () => {
+    expect(keyFieldNames).toContain('a')
+  })
+
+  test('uuid fields are keys', () => {
+    expect(keyFieldNames).toContain('b')
+  })
+
+  test('cuid fields are keys', () => {
+    expect(keyFieldNames).toContain('c')
+  })
+})
+
 describe('Finders throw helpfull exceptions', () => {
   const source = `
     model User {
