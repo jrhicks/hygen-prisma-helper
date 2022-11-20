@@ -1,10 +1,46 @@
 import { getSchema } from '@mrleebo/prisma-ast'
+import inflection from 'inflection'
 
 const SCALOR_TYPES = ['Float', 'String', 'Int', 'Boolean', 'DateTime', 'Bytes', 'Decimal']
+
+const singularName = (name) => {
+  return inflection.singularize(name)
+}
+
+const pluralName = (name) => {
+  return inflection.pluralize(name)
+}
+
+
+const singularVariable = (name) => {
+  return inflection.camelize(inflection.singularize(name), true)
+}
+
+const pluralVariable = (name) => {
+  return inflection.camelize(inflection.pluralize(name), true)
+}
+
+const singularTitle = (name) => {
+  return inflection.transform(name, ['underscore', 'titleize', 'singularize'])
+}
+
+const pluralTitle = (name) => {
+  return inflection.transform(name, ['underscore', 'titleize', 'pluralize'])
+}
+
+const singularLabel = (name) => {
+  return inflection.transform(name, ['underscore', 'singularize', 'humanize'])
+}
+
+const pluralLabel = (name) => {
+  return inflection.transform(name, ['underscore', 'pluralize', 'humanize'])
+}
+
 
 const createField = (field) => {
   let newField = Object.assign(
     {
+      name: field.name,
       autoincrement: false,
       default: undefined,
       isKey: false,
@@ -13,8 +49,7 @@ const createField = (field) => {
       isBelongsTo: false,
       foreignKey: undefined,
       references: undefined
-    },
-    field
+    }, field
   )
   if (field.attributes) {
     let attributes = [...field.attributes]
@@ -57,6 +92,14 @@ const createEnum = (enumModel) => {
 const createModel = (model) => {
   let newModel = {
     name: model.name,
+    singularName: singularName(model.name),
+    pluralName: pluralName(model.name),
+    singularVariable: singularVariable(model.name),
+    pluralVariable: pluralVariable(model.name),
+    singularTitle: singularTitle(model.name),
+    pluralTitle: pluralTitle(model.name),
+    singularLabel: singularLabel(model.name),
+    pluralLabel: pluralLabel(model.name),
     keys: [],
     scalars: [],
     hasManyRelationships: [],

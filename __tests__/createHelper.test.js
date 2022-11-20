@@ -6,6 +6,63 @@ import { createHelper } from '../src/createHelper.js'
 // managerId     Int
 
 
+describe('Model Inflection', () => {
+  const source = `
+    model CamelCase {
+    }
+    
+    model CamelCases {
+    }
+    `
+
+  const prisma = createHelper(source)
+  const camelCase = prisma.models.byName('CamelCase')
+  const camelCases = prisma.models.byName('CamelCases')
+
+  test('name', ()=>{
+    expect(camelCase.name).toBe('CamelCase')
+    expect(camelCases.name).toBe('CamelCases')
+  })
+
+  test('singularName', () => {
+    expect(camelCase.singularName).toBe('CamelCase')
+    expect(camelCases.singularName).toBe('CamelCase')
+  })
+
+  test('pluralName', () => {
+    expect(camelCase.pluralName).toBe('CamelCases')
+    expect(camelCases.pluralName).toBe('CamelCases')
+  })
+
+  test('singularVaraible', () => {
+    expect(camelCase.singularVariable).toEqual('camelCase')
+    expect(camelCases.singularVariable).toEqual('camelCase')
+  })
+  test('pluralVariable', () => {
+    expect(camelCase.pluralVariable).toEqual('camelCases')
+    expect(camelCases.pluralVariable).toEqual('camelCases')
+  })
+  test('singularLabel', () => {
+    expect(camelCase.singularLabel).toEqual('Camel case')
+    expect(camelCases.singularLabel).toEqual('Camel case')
+  })
+  test('pluralLabel', () => {
+    expect(camelCase.pluralLabel).toEqual('Camel cases')
+    expect(camelCases.pluralLabel).toEqual('Camel cases')
+  })
+
+  test('singularTitle', () => {
+    expect(camelCase.singularTitle).toEqual('Camel Case')
+    expect(camelCases.singularTitle).toEqual('Camel Case')
+  })
+  test('pluralTitle', () => {
+    expect(camelCase.pluralTitle).toEqual('Camel Cases')
+    expect(camelCases.pluralTitle).toEqual('Camel Cases')
+  })
+
+
+})
+
 describe('Finders', () => {
   test('find models by name', () => {
     const source = `

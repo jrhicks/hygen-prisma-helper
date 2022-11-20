@@ -205,7 +205,8 @@
     "@semantic-release/github"
   ],
   "dependencies": {
-    "@mrleebo/prisma-ast": "^0.4.1"
+    "@mrleebo/prisma-ast": "^0.4.1",
+    "inflection": "^2.0.0"
   },
   "config": {
     "commitizen": {
