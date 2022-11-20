@@ -1,7 +1,5 @@
 import { getSchema } from '@mrleebo/prisma-ast'
-const inflection = require('inflection')
-
-console.log({inflection, getSchema})
+import inflection from 'inflection'
 
 const SCALOR_TYPES = ['Float', 'String', 'Int', 'Boolean', 'DateTime', 'Bytes', 'Decimal']
 
