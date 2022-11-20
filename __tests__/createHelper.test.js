@@ -5,6 +5,24 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+describe('Finders throw helpfull exceptions', () => {
+  const source = `
+    model User {
+    }
+    enum Role {
+    }
+    `
+  const prisma = createHelper(source)
+
+  test('models.finder', () => {
+    expect(() => prisma.models.find('X')).toThrow(`Model X not found`)
+  })
+
+  test('enums.finder', () => {
+    expect(() => prisma.enums.find('X')).toThrow(`Enum X not found`)
+  })
+})
+
 describe('Field Inflection', () => {
   const source = `
     model User {
