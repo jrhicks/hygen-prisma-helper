@@ -134,7 +134,7 @@ export const createHelper = (source) => {
   const prisma = {
     models: {
       all: models,
-      byName: (name) => {
+      find: (name) => {
         let model = models.filter((x) => x.name === name)[0]
         if (!model) {
           throw `Model ${name} not found`
@@ -144,7 +144,7 @@ export const createHelper = (source) => {
     },
     enums: {
       all: enums,
-      byName: (name) => {
+      find: (name) => {
         let enumModel = enums.filter((x) => x.name === name)[0]
         if (!enumModel) {
           throw `Enum ${name} not found`

@@ -15,8 +15,8 @@ describe('Model Inflection', () => {
     `
 
   const prisma = createHelper(source)
-  const camelCase = prisma.models.byName('CamelCase')
-  const camelCases = prisma.models.byName('CamelCases')
+  const camelCase = prisma.models.find('CamelCase')
+  const camelCases = prisma.models.find('CamelCases')
 
   test('name', () => {
     expect(camelCase.name).toBe('CamelCase')
@@ -66,7 +66,7 @@ describe('Finders', () => {
       model User {
       }`
     const prisma = createHelper(source)
-    expect(prisma.models.byName('User')).toBeDefined()
+    expect(prisma.models.find('User')).toBeDefined()
   })
 
   test('find enums by name', () => {
@@ -74,7 +74,7 @@ describe('Finders', () => {
       enum Status {
       }`
     const prisma = createHelper(source)
-    expect(prisma.enums.byName('Status')).toBeDefined()
+    expect(prisma.enums.find('Status')).toBeDefined()
   })
 })
 
