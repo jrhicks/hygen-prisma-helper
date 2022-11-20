@@ -93,12 +93,25 @@ const createField = (field) => {
       })
     }
   }
-  // console.log(JSON.stringify(field,null,2))
   return newField
 }
 
 const createEnum = (enumModel) => {
-  return enumModel
+  const newEnum = Object.assign(
+    {
+      name: enumModel.name,
+      singularName: singularName(enumModel.name),
+      pluralName: pluralName(enumModel.name),
+      singularVariable: singularVariable(enumModel.name),
+      pluralVariable: pluralVariable(enumModel.name),
+      singularTitle: singularTitle(enumModel.name),
+      pluralTitle: pluralTitle(enumModel.name),
+      singularLabel: singularLabel(enumModel.name),
+      pluralLabel: pluralLabel(enumModel.name)
+    },
+    enumModel
+  )
+  return newEnum
 }
 
 const createModel = (model) => {
@@ -125,7 +138,6 @@ const createModel = (model) => {
       .forEach((f) => {
         let newField = createField(f)
         if (SCALOR_TYPES.includes(newField.fieldType) && !newField.isKey) {
-          console.log({ name: newField.name, isKey: newField.isKey })
           newModel.scalars.push(newField)
         }
         if (newField.isBelongsTo) {

@@ -5,6 +5,68 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+describe('Enum inflection', () => {
+  const source = `
+  enum StatusFoo {
+    ACTIVE
+    INACTIVE
+  }
+  enum StatusFoos {
+    ACTIVE
+    INACTIVE
+  }
+  `
+
+  const prisma = createHelper(source)
+  const status = prisma.enums.find('StatusFoo')
+  const statuses = prisma.enums.find('StatusFoos')
+
+  test('name', () => {
+    expect(status.name).toBe('StatusFoo')
+    expect(statuses.name).toBe('StatusFoos')
+  })
+
+  test('singularName', () => {
+    expect(status.singularName).toBe('StatusFoo')
+    expect(statuses.singularName).toBe('StatusFoo')
+  })
+
+  test('pluralName', () => {
+    expect(status.pluralName).toBe('StatusFoos')
+    expect(statuses.pluralName).toBe('StatusFoos')
+  })
+
+  test('singularVaraible', () => {
+    expect(status.singularVariable).toEqual('statusFoo')
+    expect(statuses.singularVariable).toEqual('statusFoo')
+  })
+
+  test('pluralVariable', () => {
+    expect(status.pluralVariable).toEqual('statusFoos')
+    expect(statuses.pluralVariable).toEqual('statusFoos')
+  })
+
+  test('singularLabel', () => {
+    expect(status.singularLabel).toEqual('Status foo')
+    expect(statuses.singularLabel).toEqual('Status foo')
+  })
+
+  test('pluralLabel', () => {
+    expect(status.pluralLabel).toEqual('Status foos')
+    expect(statuses.pluralLabel).toEqual('Status foos')
+  })
+
+  test('singularTitle', () => {
+    expect(status.singularTitle).toEqual('Status Foo')
+    expect(statuses.singularTitle).toEqual('Status Foo')
+  })
+
+  test('pluralTitle', () => {
+    expect(status.pluralTitle).toEqual('Status Foos')
+    expect(statuses.pluralTitle).toEqual('Status Foos')
+  })
+})
+
 describe('Model Keys', () => {
   const source = `
     model User {
