@@ -62,7 +62,9 @@
     "lockfile-lint": "^4.9.6",
     "open-cli": "^7.1.0",
     "prettier": "^2.7.1",
-    "semantic-release": "^19.0.5"
+    "semantic-release": "^19.0.5",
+    "typescript": "^4.9.3",
+    "inflection": "^2.0.0"
   },
   "jest": {
     "testEnvironment": "node",
@@ -206,8 +208,7 @@
   ],
   "dependencies": {
     "@mrleebo/prisma-ast": "^0.4.1",
-    "inflection": "^2.0.0",
-    "typescript": "^4.9.3"
+    "inflection": "^2.0.0"
   },
   "config": {
     "commitizen": {

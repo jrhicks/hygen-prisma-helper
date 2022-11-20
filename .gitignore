@@ -108,3 +108,7 @@ typings/
 # Snyk Code
 
 .dccache
+
+# VSCode
+
+.vscode/
