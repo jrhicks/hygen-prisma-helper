@@ -35,19 +35,22 @@ npm install --save hygen-prisma-helper
 
 3) Create helper from schema.prisma text and export it as a helper
 
+NOTICE: Notice the commonjs requires instead of imports.  The hygen-cli seems to want .hygen.js to be commonjs (2022)
+
 `.hygen.js`
 ```js
-const hygenPrismaHelper = require("hygen-prisma-helper")
-const fs = require("fs")
-const schema = fs.readFileSync( "./prisma/schema.prisma" )
-const prisma = hygenPrismaHelper.createHelper(schema)
+const { readFileSync } = require("fs")
+const { createHelper } = require("hygen-prisma-helper")
+
+const schema = readFileSync("./prisma/schema.prisma", {encoding:'utf8', flag:'r'});
+const prisma = createHelper(schema);
 
 module.exports = {
   helpers: {
-      prisma: prisma
+    prisma: prisma,
   },
 };
-  
+
 ```
 
 # Example
