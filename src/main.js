@@ -1,5 +1,5 @@
-import { getSchema } from '@mrleebo/prisma-ast'
-import inflection from 'inflection'
+const { getSchema } = require('@mrleebo/prisma-ast')
+const inflection = require('inflection')
 
 const SCALOR_TYPES = ['Float', 'String', 'Int', 'Boolean', 'DateTime', 'Bytes', 'Decimal']
 
@@ -179,7 +179,8 @@ const createModel = (model) => {
   return newModel
 }
 
-export const createHelper = (source) => {
+module.exports = {
+    createHelper: (source) => {
   const schema = getSchema(source)
   const enums = schema.list.filter((x) => x.type === 'enum').map(createEnum)
   const models = schema.list.filter((x) => x.type === 'model').map(createModel)
@@ -246,4 +247,4 @@ export const createHelper = (source) => {
   }
 
   return prisma
-}
+}}

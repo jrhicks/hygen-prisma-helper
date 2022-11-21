@@ -1,4 +1,4 @@
-import { createHelper } from '../src/main.js'
+const { createHelper } = require('../src/main.js')
 
 // posts         Post[]
 // profile       Profile?
