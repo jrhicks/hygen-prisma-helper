@@ -29,18 +29,25 @@ npm install --save hygen-prisma-helper
 
 # Usage
 
-You can extend Hygen via `.hygen.js`
+1) Install [Hygen](https://www.hygen.io/) a scalable code generator that saves you time.
 
+2) Add `.hygen.js` extensibility script to your project.  [Learn More](https://www.hygen.io/docs/extensibility).
+
+3) Create helper from schema.prisma text and export it as a helper
+
+`.hygen.js`
 ```js
-const { createHelper } = require("hygen-prisma-helper")
-
-const prisma = createHelpers('model User { }`)
+const hygenPrismaHelper = require("hygen-prisma-helper")
+const fs = require("fs")
+const schema = fs.readFileSync( "./prisma/schema.prisma" )
+const prisma = hygenPrismaHelper.createHelper(schema)
 
 module.exports = {
-    helpers: {
-       prisma: prisma,
-    },
-  };
+  helpers: {
+      prisma: prisma
+  },
+};
+  
 ```
 
 # Example
