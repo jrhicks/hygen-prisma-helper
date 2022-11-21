@@ -47,42 +47,46 @@ const createField = (field) => {
       pluralTitle: pluralTitle(field.name),
       singularLabel: singularLabel(field.name),
       pluralLabel: pluralLabel(field.name),
-      autoincrement: false,
       default: undefined,
-      isKey: false,
-      isScalor: true,
-      isEnum: false,
-      isBelongsTo: false,
+      isEnumField: false,
+      isScalarField: false,
+      isKeyField: false,
+      isBelongsToField: false,
+      isHasManyField: false,
+      isHasOneField: false,
+      isRequired: false,
+      isUnique: false,
+      isArray: field.array,
       foreignKey: undefined,
-      references: undefined
+      references: undefined,
+      relatedModel: null,
+      relatedEnum: null
     },
     field
   )
+
   if (field.attributes) {
     let attributes = [...field.attributes]
     if (attributes) {
       attributes.forEach((attribute) => {
         if (attribute.name === 'unique') {
-          newField.unique = true
+          newField.isUnique = true
         }
         if (attribute.name === 'default') {
           const keyDefaults = ['autoincrement', 'cuid', 'uuid']
           newField.default = attribute.args[0].value.name
           if (keyDefaults.includes(newField.default)) {
-            newField.isKey = true
+            newField.isKeyField = true
           }
         }
         if (attribute.name === 'relation') {
           field.isRelation = true
-          newField.fieldModel = () => {
-            throw 'Not implemented'
-          }
           attribute.args.forEach((arg) => {
             let value = arg.value
             if (value.type === 'keyValue') {
               if (value.key === 'fields') {
                 newField.foreignKey = value.value.args[0]
-                newField.isBelongsTo = true
+                newField.isBelongsToField = true
               }
               if (value.key === 'references') {
                 newField.references = value.value.args[0]
@@ -132,11 +136,13 @@ const createModel = (model) => {
     pluralTitle: pluralTitle(model.name),
     singularLabel: singularLabel(model.name),
     pluralLabel: pluralLabel(model.name),
-    keys: [],
-    scalars: [],
-    hasManyRelationships: [],
-    hasOneRelationships: [],
-    belongsToRelationships: []
+    fields: [],
+    keyFields: [],
+    enumFields: [],
+    scalarFields: [],
+    hasManyFields: [],
+    hasOneFields: [],
+    belongsToFields: []
   }
 
   if (model.properties) {
@@ -144,21 +150,32 @@ const createModel = (model) => {
       .filter((x) => x.type === 'field')
       .forEach((f) => {
         let newField = createField(f)
-        if (SCALOR_TYPES.includes(newField.fieldType) && !newField.isKey) {
-          newModel.scalars.push(newField)
+        newModel.fields.push(newField)
+
+        // IDENTIFY AND COLLECT SCALAR FIELDS
+        if (SCALOR_TYPES.includes(newField.fieldType) && !newField.isKeyField) {
+          newModel.scalarFields.push(newField)
+          newField.isScalar = true
         }
-        if (newField.isBelongsTo) {
-          newModel.belongsToRelationships.push(newField)
+
+        // COLLECT BELONGS TO FIELDS
+        if (newField.isBelongsToField) {
+          newModel.belongsToFields.push(newField)
         }
-        if (newField.isKey) {
-          newModel.keys.push(newField)
+
+        // COLLECT KEYFIELDS
+        if (newField.isKeyField) {
+          newModel.keyFields.push(newField)
         }
+
         delete newField.attributes
       })
   }
 
-  let foreignKeys = newModel.belongsToRelationships.map((x) => x.foreignKey)
-  newModel.scalars = newModel.scalars.filter((scalor) => !foreignKeys.includes(scalor.name))
+  let foreignkeyFields = newModel.belongsToFields.map((x) => x.foreignKey)
+  newModel.scalarFields = newModel.scalarFields.filter(
+    (scalor) => !foreignkeyFields.includes(scalor.name)
+  )
   return newModel
 }
 
@@ -166,6 +183,44 @@ export const createHelper = (source) => {
   const schema = getSchema(source)
   const enums = schema.list.filter((x) => x.type === 'enum').map(createEnum)
   const models = schema.list.filter((x) => x.type === 'model').map(createModel)
+
+  // Identify and Link hasManyFields
+  models.forEach((model) => {
+    model.fields.forEach((field) => {
+      if (field.isArray) {
+        let m = models.find((x) => x.name === field.fieldType)
+        if (m) {
+          field.relatedModel = m
+          field.isHasManyField = true
+          model.hasManyFields.push(field)
+        }
+      }
+    })
+  })
+
+  // Identify and Link enumFields
+  models.forEach((model) => {
+    model.fields.forEach((field) => {
+      if (!field.isScalarField && !field.isBelongsToField && !field.isHasManyField) {
+        let m = enums.find((x) => x.name === field.fieldType)
+        if (m) {
+          field.relatedModel = m
+          field.isEnumField = true
+          model.enumFields.push(field)
+        }
+      }
+    })
+  })
+
+  // Link belongToFields
+  models.forEach((model) => {
+    model.belongsToFields.forEach((field) => {
+      let m = models.find((x) => x.name === field.references)
+      if (m) {
+        field.relatedModel = models.find((x) => x.name === field.fieldType)
+      }
+    })
+  })
 
   const prisma = {
     models: {

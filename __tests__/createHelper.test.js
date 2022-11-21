@@ -5,6 +5,44 @@ import { createHelper } from '../src/createHelper.js'
 // manager       User       @relation(fields: [managerId], references: [id])
 // managerId     Int
 
+describe('Traverse Relationships', () => {
+  const source = `
+    model Post {
+      id       Int       @id @default(autoincrement())
+      status   Status    @default(DRAFT)
+      comments Comment[]
+    }
+    
+    model Comment {
+      id     Int
+      Post   Post? @relation(fields: [postId], references: [id]) // A comment can have one post
+      postId Int?
+    }
+
+    enum Status {
+      DRAFT
+      PUBLISHED
+    }
+  `
+
+  const prisma = createHelper(source)
+
+  test('traverse belongsToField', () => {
+    const comment = prisma.models.find('Comment')
+    expect(comment.belongsToFields[0].relatedModel).toBeDefined()
+  })
+
+  test('traverse hasManyField', () => {
+    const post = prisma.models.find('Post')
+    expect(post.hasManyFields[0].relatedModel).toBeDefined()
+  })
+
+  test('traverse enumField', () => {
+    const post = prisma.models.find('Post')
+    expect(post.enumFields[0].relatedEnum).toBeDefined()
+  })
+})
+
 describe('Enum Values', () => {
   const source = `
   enum Status {
@@ -93,7 +131,7 @@ describe('Enum inflection', () => {
   })
 })
 
-describe('Model Keys', () => {
+describe('Model keyFields', () => {
   const source = `
     model User {
       a    Int     @default(autoincrement())
@@ -103,24 +141,24 @@ describe('Model Keys', () => {
     `
   const prisma = createHelper(source)
   const model = prisma.models.find('User')
-  const keyFieldNames = model.keys.map((x) => x.name)
-  const scalorFieldNames = model.scalars.map((x) => x.name)
+  const keyFieldNames = model.keyFields.map((x) => x.name)
+  const scalorFieldNames = model.scalarFields.map((x) => x.name)
 
-  test('scalars do NOT include key fields', () => {
+  test('scalarFields do NOT include key fields', () => {
     expect(scalorFieldNames).not.toContain('a')
     expect(scalorFieldNames).not.toContain('b')
     expect(scalorFieldNames).not.toContain('c')
   })
 
-  test('autoincrement fields are keys', () => {
+  test('autoincrement fields are keyFields', () => {
     expect(keyFieldNames).toContain('a')
   })
 
-  test('uuid fields are keys', () => {
+  test('uuid fields are keyFields', () => {
     expect(keyFieldNames).toContain('b')
   })
 
-  test('cuid fields are keys', () => {
+  test('cuid fields are keyFields', () => {
     expect(keyFieldNames).toContain('c')
   })
 })
@@ -152,8 +190,8 @@ describe('Field Inflection', () => {
     `
 
   const prisma = createHelper(source)
-  const snake_case = prisma.models.find('User').scalars[0]
-  const snake_cases = prisma.models.find('User').scalars[1]
+  const snake_case = prisma.models.find('User').scalarFields[0]
+  const snake_cases = prisma.models.find('User').scalarFields[1]
 
   test('name', () => {
     expect(snake_case.name).toBe('snake_case')
@@ -285,23 +323,23 @@ describe('Models belongsTo', () => {
   const prisma = createHelper(source)
   const model = prisma.models.all[0]
 
-  test('Set belongsToRelationships', () => {
-    let btFieldNames = model.belongsToRelationships.map((x) => x.name)
+  test('Set belongsToFields', () => {
+    let btFieldNames = model.belongsToFields.map((x) => x.name)
     expect(btFieldNames).toContain('manager')
   })
 
   test('Set foreignKey on belongsToField', () => {
-    let btField = model.belongsToRelationships.find((x) => x.name === 'manager')
+    let btField = model.belongsToFields.find((x) => x.name === 'manager')
     expect(btField.foreignKey).toBe('managerId')
   })
 
   test('Set references on belongsToField', () => {
-    let btField = model.belongsToRelationships.find((x) => x.name === 'manager')
+    let btField = model.belongsToFields.find((x) => x.name === 'manager')
     expect(btField.references).toBe('id')
   })
 
-  test('Exclude foreignKeys from scalors', () => {
-    expect(model.scalars.map((s) => s.name)).not.toContain('managerId')
+  test('Exclude foreignkeyFields from scalors', () => {
+    expect(model.scalarFields.map((s) => s.name)).not.toContain('managerId')
   })
 })
 
@@ -323,7 +361,7 @@ describe('Models collect scalor fields', () => {
 
   const prisma = createHelper(source)
   const models = prisma.models.all
-  const scalorFieldNames = models[0].scalars.map((f) => f.name)
+  const scalorFieldNames = models[0].scalarFields.map((f) => f.name)
 
   test('Include Boolean Fields in scalors', () => {
     expect(scalorFieldNames).toContain('booleanField')
